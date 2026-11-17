@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الاستعلام عن رقم الجلوس والدور</title>
+  <style>
+    body { font-family: Tahoma, Arial, sans-serif; background: #f0f2f5; text-align: center; padding: 20px; }
+    .card { background: #fff; max-width: 450px; margin: 30px auto; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    input { width: 90%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; text-align: center; }
+    .item { margin-top: 12px; padding: 15px; background: #e8f5e9; border-radius: 8px; text-align: right; line-height: 1.8; border-right: 4px solid #2e7d32; }
+    .error { color: #d93025; margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>الاستعلام عن رقم الجلوس والدور</h2>
+  <p>اكتب اسم الطالب (تظهر النتيجة فوراً أثناء الكتابة)</p>
+  <input type="text" id="searchInput" placeholder="اكتب 3 حروف على الأقل من الاسم..." onkeyup="liveSearch()">
+  <div id="results"></div>
+</div>
+
+<script>
+  // ضع بيانات الطلاب هنا بنفس الصيغة (الاسم، رقم الجلوس، الدور)
+  const students = [
+    { name: "أحمد محمد علي حسن", seat: "1001", floor: "الدور الأول" },
+    { name: "سارة محمود إبراهيم", seat: "1002", floor: "الدور الأول" },
+    { name: "عمر خالد عبد الرحمن", seat: "1003", floor: "الدور الثاني" },
+    { name: "مريم طارق سعيد", seat: "1004", floor: "الدور الثاني" },
+    { name: "يوسف مصطفى كامل", seat: "1005", floor: "الدور الأرضي" }
+  ];
+
+  // دالة توحيد الحروف (لتجاهل الهمزات والتاء المربوطة)
+  function normalize(text) {
+    return text.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').trim();
+  }
+
+  function liveSearch() {
+    const query = normalize(document.getElementById("searchInput").value);
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (query.length < 3) return;
+
+    const matches = students.filter(s => normalize(s.name).includes(query));
+
+    if (matches.length === 0) {
+      resultsDiv.innerHTML = '<div class="error">لا يوجد طالب بهذا الاسم.</div>';
+      return;
+    }
+
+    matches.forEach(s => {
+      resultsDiv.innerHTML += `
+        <div class="item">
+          <div><strong>الاسم:</strong> ${s.name}</div>
+          <div><strong>رقم الجلوس:</strong> ${s.seat}</div>
+          <div><strong>الدور:</strong> ${s.floor}</div>
+        </div>
+      `;
+    });
+  }
+</script>
+
+</body>
+</html>
